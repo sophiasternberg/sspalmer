@@ -1,0 +1,67 @@
+---
+title: "pal_penguin_vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pal_penguin_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(sspalmer)
+library(ggplot2)
+```
+
+```{r}
+head(pal_penguin)
+```
+```{r}
+# cleaning extraneous values
+pal_penguin <- pal_penguin[!(pal_penguin$`Mean Mass Flux (mg/m²/day)` < 0),] 
+```
+
+```{r}
+g <- ggplot(data = pal_penguin, aes(x = `Start Date`, y = `Mean Mass Flux (mg/m²/day)`)) +
+  geom_point() +
+  labs(x = "Date",
+    y = "Mean Mass Flux (mg/m²/day)",
+    title = "Mean Mass Flux Overtime")  +
+  theme(plot.title = element_text(hjust = 0.5))
+g
+```
+
+```{r}
+g <- ggplot(data.frame(pal_penguin$`Mean Mass Flux (mg/m²/day)`), aes(pal_penguin$`Mean Mass Flux (mg/m²/day)`)) +
+  geom_histogram(binwidth = 60, aes(y = ..density..))  +
+  labs(x = "Mean Mass Flux (mg/m²/day)",
+    y = "Density")  +
+  theme(plot.title = element_text(hjust = 0.5))
+g
+```
+
+```{r}
+g + geom_density(bw = 20, kernel = "gaussian", col = "red")
+```
+```{r}
+g + geom_density(bw = 20, kernel = "rectangular", col = "dodgerblue")
+```
+```{r}
+g + geom_density(bw = 20, kernel = "epanechnikov", col = "blue")
+```
+```{r, warning=FALSE}
+g + geom_density(bw = "ucv", kernel = "gaussian", col = "pink") +
+  geom_density(bw = "nrd", kernel = "gaussian", col = "purple")
+```
+Out of all the density curves, it looks like a bandwidth of 20 with the epanechnikov kernel fits the Mean Mass Flux data the best. 
+
+
+
+
+
